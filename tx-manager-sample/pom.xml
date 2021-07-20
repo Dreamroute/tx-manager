@@ -11,4 +11,17 @@
 
     <artifactId>tx-manager-sample</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.github.dreamroute</groupId>
+            <artifactId>tx-manager-spring-boot-starter</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.dreamroute</groupId>
+            <artifactId>hikari-spring-boot-starter</artifactId>
+            <version>1.4-RELEASE</version>
+        </dependency>
+    </dependencies>
+
 </project>
