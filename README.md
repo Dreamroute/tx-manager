@@ -16,20 +16,19 @@
 ```
 
 #### 配置说明
-```
-// 【必填】配置需要被事务拦截的方法，使用spring的表达式
+```properties
+# 【必填】配置需要被事务拦截的方法，使用spring的表达式
 tx.manager.execution-expression = execution(* com.github.dreamroute.tx.manager.sample.service.impl..*.*(..))
-
-// 【非必填】默认是：java.lang.RuntimeException
+# 【非必填】默认是：java.lang.RuntimeException
 tx.manager.rollback-for = java.lang.Exception 
-// 【非必填】支持通配符，默认是：list*, get*, find*, page*, count*, query*, select*
+# 【非必填】支持通配符，默认是：list*, get*, find*, page*, count*, query*, select*
 tx.manager.read-only = xxx
-// 【非必填】支持通配符，默认是：除开read-only之外的方法
+# 【非必填】支持通配符，默认是：除开read-only之外的方法
 tx.manager.required = xxx
 ```
 ```properties
-如果同一个表达式，既配置了`tx.manager.read-only`同时又配置了`tx.manager.required`，那么`required`优先级更高，比如
+# 如果同一个表达式，既配置了`tx.manager.read-only`同时又配置了`tx.manager.required`，那么`required`优先级更高，
+# 比如下方配置，那么生效的其实是tx.manager.required
 tx.manager.read-only = getUser
 tx.manager.required = getUser
-那么生效的其实是tx.manager.required
 ```
