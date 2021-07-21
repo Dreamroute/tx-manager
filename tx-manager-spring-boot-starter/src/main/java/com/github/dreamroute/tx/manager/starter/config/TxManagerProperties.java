@@ -18,4 +18,14 @@ public class TxManagerProperties {
      * 指定回滚异常，默认java.lang.RuntimeException
      */
     private String rollbackFor = "java.lang.RuntimeException";
+
+    /**
+     * 只读事务
+     */
+    private String readOnly;
+
+    /**
+     * 普通事务
+     */
+    private String required;
 }

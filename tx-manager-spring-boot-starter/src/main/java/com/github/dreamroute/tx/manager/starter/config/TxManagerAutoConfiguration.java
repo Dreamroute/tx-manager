@@ -16,9 +16,14 @@ import org.springframework.transaction.interceptor.TransactionAttribute;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * @author w.dehai.2021/7/20.11:37
@@ -31,7 +36,6 @@ public class TxManagerAutoConfiguration {
 
     @Resource
     private TxManagerProperties properties;
-
     @Resource
     private TransactionManager txManager;
 
@@ -44,13 +48,30 @@ public class TxManagerAutoConfiguration {
         readOnly.setReadOnly(true);
 
         // 普通事务
-        RuleBasedTransactionAttribute require = new RuleBasedTransactionAttribute();
+        RuleBasedTransactionAttribute required = new RuleBasedTransactionAttribute();
         String rollbackFor = properties.getRollbackFor();
         Class<?> exceptionCls = rollbackException(rollbackFor);
-        require.setRollbackRules(Collections.singletonList(new RollbackRuleAttribute(exceptionCls)));
+        required.setRollbackRules(Collections.singletonList(new RollbackRuleAttribute(exceptionCls)));
 
+        Map<String, TransactionAttribute> methods = processExpress(required, readOnly);
+        source.setNameMap(methods);
+        return new TransactionInterceptor(txManager, source);
+    }
+
+    @Bean(name = "txAdviceAdvisor")
+    public Advisor txAdviceAdvisor() {
+        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+        String executionExpression = properties.getExecutionExpression();
+        if (isBlank(executionExpression)) {
+            throw new IllegalArgumentException("配置tx.manager.execution-expression是必填项");
+        }
+        pointcut.setExpression(executionExpression);
+        return new DefaultPointcutAdvisor(pointcut, txAdvice());
+    }
+
+    private Map<String, TransactionAttribute> processExpress(RuleBasedTransactionAttribute required, RuleBasedTransactionAttribute readOnly) {
         Map<String, TransactionAttribute> methods = new HashMap<>();
-        methods.put("*", require);
+        methods.put("*", required);
 
         methods.put("list*", readOnly);
         methods.put("get*", readOnly);
@@ -60,15 +81,15 @@ public class TxManagerAutoConfiguration {
         methods.put("query*", readOnly);
         methods.put("select*", readOnly);
 
-        source.setNameMap(methods);
-        return new TransactionInterceptor(txManager, source);
-    }
-
-    @Bean(name = "txAdviceAdvisor")
-    public Advisor txAdviceAdvisor() {
-        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
-        pointcut.setExpression(properties.getExecutionExpression());
-        return new DefaultPointcutAdvisor(pointcut, txAdvice());
+        String ro = properties.getReadOnly();
+        String rd = properties.getRequired();
+        if (isNotBlank(ro)) {
+            Arrays.stream(ro.split(",")).map(String::trim).forEach(r -> methods.put(r, readOnly));
+        }
+        if (isNotEmpty(rd)) {
+            Arrays.stream(rd.split(",")).map(String::trim).forEach(r -> methods.put(r, required));
+        }
+        return methods;
     }
 
     private Class<?> rollbackException(String rollbackFor) {
