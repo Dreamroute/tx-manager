@@ -17,7 +17,7 @@
 
 #### 排除依赖
 对于不需要事务的微服务，可以使用`@SpringBootApplication(exclude = {TxManagerAutoConfiguration.class})`方式进行排除
-`
+
 
 #### 配置说明
 ```properties
