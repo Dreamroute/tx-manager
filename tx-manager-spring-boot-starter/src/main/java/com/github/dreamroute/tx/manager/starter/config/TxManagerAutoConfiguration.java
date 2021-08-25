@@ -44,8 +44,11 @@ public class TxManagerAutoConfiguration {
         NameMatchTransactionAttributeSource source = new NameMatchTransactionAttributeSource();
 
         // 只读事务
-        RuleBasedTransactionAttribute readOnly = new RuleBasedTransactionAttribute();
-        readOnly.setReadOnly(true);
+        RuleBasedTransactionAttribute readOnly = null;
+        if (properties.isEnableReadOnly()) {
+            readOnly = new RuleBasedTransactionAttribute();
+            readOnly.setReadOnly(true);
+        }
 
         // 普通事务
         RuleBasedTransactionAttribute required = new RuleBasedTransactionAttribute();

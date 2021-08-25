@@ -20,6 +20,11 @@ public class TxManagerProperties {
     private String rollbackFor = "java.lang.RuntimeException";
 
     /**
+     * 是否开启readOnly，默认false，true：对于配置了readOnly的方法就会被设置成只读事务，false：对于配置了readOnly的方法就不会被施加事务管理
+     */
+    private boolean enableReadOnly = false;
+
+    /**
      * 只读事务
      */
     private String readOnly;

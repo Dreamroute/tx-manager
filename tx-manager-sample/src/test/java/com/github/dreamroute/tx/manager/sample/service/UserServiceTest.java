@@ -1,5 +1,6 @@
 package com.github.dreamroute.tx.manager.sample.service;
 
+import com.github.dreamroute.tx.manager.sample.domain.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -27,6 +28,15 @@ class UserServiceTest {
     @Test
     void insertInReadOnlyTest() {
         userService.getReadOnly();
+    }
+
+    /**
+     * 读取数据
+     */
+    @Test
+    void readTest() {
+        User user = userService.selectById(1L);
+        System.err.println(user);
     }
 
 }

@@ -46,4 +46,9 @@ public class UserServiceImpl implements UserService {
         user.setPassword("123");
         userMapper.insert(user);
     }
+
+    @Override
+    public User selectById(Long id) {
+        return userMapper.getById(id);
+    }
 }

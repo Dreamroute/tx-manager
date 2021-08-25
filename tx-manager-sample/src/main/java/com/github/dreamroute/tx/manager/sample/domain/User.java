@@ -6,7 +6,7 @@ import com.github.dreamroute.mybatis.pro.core.annotations.Transient;
 import lombok.Data;
 
 @Data
-@Table("smart_user")
+@Table("test")
 public class User {
     @Id
     private Long id;

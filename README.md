@@ -25,6 +25,8 @@
 tx.manager.execution-expression = execution(* com.github.dreamroute.tx.manager.sample.service.impl..*.*(..))
 # 【非必填】默认是：java.lang.RuntimeException
 tx.manager.rollback-for = java.lang.Exception 
+# 【非必填】默认是：false，对于配置了readOnly的方法，如果是false，那么readOnly方法将不会被施加事务，否则施加readOnly事务
+tx.manager.enable-read-only=true/false
 # 【非必填】支持通配符，默认是：list*, get*, find*, page*, count*, query*, select*
 tx.manager.read-only = xxx
 # 【非必填】支持通配符，默认是：除开read-only之外的方法
