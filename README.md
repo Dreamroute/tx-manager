@@ -11,7 +11,7 @@
 <dependency>
     <groupId>com.github.dreamroute</groupId>
     <artifactId>tx-manager-spring-boot-starter</artifactId>
-    <version>1.0-RELEASE</version>
+    <version>1.1-RELEASE</version>
 </dependency>
 ```
 
