@@ -4,8 +4,13 @@ import com.github.dreamroute.tx.manager.sample.domain.User;
 import com.github.dreamroute.tx.manager.sample.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.TransientDataAccessResourceException;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class UserServiceTest {
@@ -17,12 +22,12 @@ class UserServiceTest {
 
     @Test
     void insertTest() {
-        userService.insert();
+        assertThrows(IllegalArgumentException.class, userService::insert);
     }
 
     @Test
     void insertThrowExceptionTest() throws Exception {
-        userService.insertThrowException();
+        assertThrows(IOException.class, userService::insertThrowException);
     }
 
     /**
@@ -30,7 +35,7 @@ class UserServiceTest {
      */
     @Test
     void insertInReadOnlyTest() {
-        userService.getReadOnly();
+        assertThrows(TransientDataAccessResourceException.class, userService::getReadOnly);
     }
 
     /**
@@ -39,19 +44,19 @@ class UserServiceTest {
     @Test
     void readTest() {
         User user = userService.selectById(1L);
-        System.err.println(user);
+        assertEquals("w.dehai", user.getName());
     }
 
     @Test
     void selectByIdOfMapper() {
-        User u = userMapper.selectById(1L);
-        System.err.println(u);
+        User user = userMapper.selectById(1L);
+        assertEquals("w.dehai", user.getName());
     }
 
     @Test
     void selectByIdOfService() {
         User user = userService.selectById(1L);
-        System.err.println(user);
+        assertEquals("w.dehai", user.getName());
     }
 
 }
