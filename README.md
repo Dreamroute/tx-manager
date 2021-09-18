@@ -21,8 +21,8 @@
 
 #### 配置说明
 ```properties
-# 【必填】配置需要被事务拦截的方法，使用spring的表达式
-tx.manager.execution-expression = execution(* com.github.dreamroute.tx.manager.sample.service.impl..*.*(..))
+# 【必填】配置需要被事务拦截的包，多个包用逗号分割
+tx.manager.packages=com.github.dreamroute.tx.manager.sample.service.impl
 # 【非必填】默认是：java.lang.RuntimeException
 tx.manager.rollback-for = java.lang.Exception 
 # 【非必填】默认是：false，对于配置了readOnly的方法，如果是false，那么readOnly方法将不会被施加事务，否则施加readOnly事务

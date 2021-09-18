@@ -10,9 +10,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "tx.manager")
 public class TxManagerProperties {
     /**
-     * 拦截方法执行事务表达式，如：execution(* com.github.dreamroute.tx.service.impl..*.*(..))
+     * 需要被拦截的包，多个用逗号分割，比如：com.github.a, com.github.b
      */
-    private String executionExpression;
+    private String packages;
 
     /**
      * 指定回滚异常，默认java.lang.RuntimeException

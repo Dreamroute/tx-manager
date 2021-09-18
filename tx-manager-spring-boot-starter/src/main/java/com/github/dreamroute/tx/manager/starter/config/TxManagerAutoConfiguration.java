@@ -20,8 +20,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -64,11 +65,12 @@ public class TxManagerAutoConfiguration {
     @Bean(name = "txAdviceAdvisor")
     public Advisor txAdviceAdvisor() {
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
-        String executionExpression = properties.getExecutionExpression();
-        if (isBlank(executionExpression)) {
-            throw new IllegalArgumentException("配置tx.manager.execution-expression是必填项");
+        String packages = properties.getPackages();
+        if (isEmpty(packages)) {
+            throw new IllegalArgumentException("配置tx.manager.packages是必填项，表示需要执行事务的包!");
         }
-        pointcut.setExpression(executionExpression);
+        String execution = Arrays.stream(packages.split(",")).map(e -> "execution(* " + e.trim() + "..*.*(..))").collect(Collectors.joining(" || "));
+        pointcut.setExpression(execution);
         return new DefaultPointcutAdvisor(pointcut, txAdvice());
     }
 
