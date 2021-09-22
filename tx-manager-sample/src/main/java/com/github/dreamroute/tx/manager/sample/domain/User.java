@@ -5,6 +5,9 @@ import com.github.dreamroute.mybatis.pro.core.annotations.Table;
 import com.github.dreamroute.mybatis.pro.core.annotations.Transient;
 import lombok.Data;
 
+/**
+ * @author w.dehai
+ */
 @Data
 @Table("smart_user")
 public class User {

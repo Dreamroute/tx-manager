@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
         addr.setName("天府三街");
         addr.setUserId(user.getId());
         addrService.insert(addr);
-        throw new RuntimeException();
+        throw new IllegalArgumentException();
     }
 
     @Override
