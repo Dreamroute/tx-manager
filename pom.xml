@@ -30,6 +30,8 @@
         <project.build.sourceEncoding>${maven.compiler.encoding}</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
 
+        <hutool-all.version>5.7.13</hutool-all.version>
+
     </properties>
 
     <dependencies>
@@ -69,6 +71,13 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool-all.version}</version>
+        </dependency>
+
     </dependencies>
 
     <distributionManagement>
