@@ -26,7 +26,7 @@ class UserServiceTest {
     }
 
     @Test
-    void insertThrowExceptionTest() throws Exception {
+    void insertThrowExceptionTest() {
         assertThrows(IOException.class, userService::insertThrowException);
     }
 
@@ -38,18 +38,9 @@ class UserServiceTest {
         assertThrows(TransientDataAccessResourceException.class, userService::getReadOnly);
     }
 
-    /**
-     * 读取数据
-     */
-    @Test
-    void readTest() {
-        User user = userService.selectById(1L);
-        assertEquals("w.dehai", user.getName());
-    }
-
     @Test
     void selectByIdOfMapper() {
-        User user = userMapper.selectById(1L);
+        User user = userMapper.selectById(1L, "id", "name");
         assertEquals("w.dehai", user.getName());
     }
 
