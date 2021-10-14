@@ -5,12 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
-import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.core.type.StandardAnnotationMetadata;
+import org.springframework.beans.BeansException;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource;
@@ -34,15 +34,26 @@ import static com.github.dreamroute.tx.manager.starter.config.EnableTxManager.DE
  * @author w.dehi.2021-10-14
  */
 @Slf4j
-public class TxManagerConfig implements ImportBeanDefinitionRegistrar {
+public class TxManagerConfig implements ApplicationContextAware {
 
+    @Resource
     private TransactionManager txManager;
+    @Resource
+    private ApplicationContext applicationContext;
 
     @Override
-    public void registerBeanDefinitions(@NonNull AnnotationMetadata importingClassMetadata, @NonNull BeanDefinitionRegistry registry) {
-        ImportBeanDefinitionRegistrar.super.registerBeanDefinitions(importingClassMetadata, registry);
-        StandardAnnotationMetadata icm = (StandardAnnotationMetadata) importingClassMetadata;
-        Class<?> ic = icm.getIntrospectedClass();
+    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    @Bean
+    public Advisor advisor() {
+        Map<String, Object> annotatedBeans = applicationContext.getBeansWithAnnotation(SpringBootApplication.class);
+        if (annotatedBeans.isEmpty()) {
+            throw new IllegalArgumentException("启动类上需要加上@SpringBootApplication注解");
+        }
+        Class<?> ic = annotatedBeans.values().toArray()[0].getClass();
+        EnableTxManager anno = AnnotationUtils.findAnnotation(ic, EnableTxManager.class);
 
         String[] packages = AnnotationUtil.getAnnotationValue(ic, EnableTxManager.class, "packages");
         Class<?> rollbackFor = AnnotationUtil.getAnnotationValue(ic, EnableTxManager.class, "rollbackFor");
@@ -50,12 +61,7 @@ public class TxManagerConfig implements ImportBeanDefinitionRegistrar {
         String[] readOnly = AnnotationUtil.getAnnotationValue(ic, EnableTxManager.class, "readOnly");
         String[] required = AnnotationUtil.getAnnotationValue(ic, EnableTxManager.class, "required");
 
-        if (registry instanceof DefaultListableBeanFactory) {
-            DefaultListableBeanFactory factory = (DefaultListableBeanFactory) registry;
-            Advisor txAdviceAdvisor = txAdviceAdvisor(enableReadOnly, rollbackFor, packages, readOnly, required);
-            this.txManager = factory.getBean(TransactionManager.class);
-            factory.registerSingleton("txAdviceAdvisor", txAdviceAdvisor);
-        }
+        return txAdviceAdvisor(enableReadOnly, rollbackFor, packages, readOnly, required);
     }
 
     public Advisor txAdviceAdvisor(boolean enableReadOnly, Class<?> rollbackFor, String[] packages, String[] readOnly, String[] required) {
