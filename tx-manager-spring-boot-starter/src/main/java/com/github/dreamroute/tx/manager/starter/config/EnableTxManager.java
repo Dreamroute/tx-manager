@@ -31,7 +31,7 @@ public @interface EnableTxManager {
     /**
      * 是否开启只读事务，默认是关闭，如果不开启，那么对于读操作，将不会开启事务，如果开启，那么对于读操作会施加只读事务
      */
-    boolean enableReadOnly() default false;
+    boolean enableReadOnly() default true;
 
     /**
      * 只读事务方法，支持通配符，比如get*, select*这种

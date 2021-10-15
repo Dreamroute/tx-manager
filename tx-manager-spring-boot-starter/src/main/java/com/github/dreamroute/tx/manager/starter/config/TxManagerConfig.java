@@ -1,12 +1,10 @@
 package com.github.dreamroute.tx.manager.starter.config;
 
-import cn.hutool.core.annotation.AnnotationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.beans.BeansException;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
@@ -29,8 +27,6 @@ import java.util.stream.Collectors;
 import static com.github.dreamroute.tx.manager.starter.config.EnableTxManager.DEFAULT_READ_ONLY_METHODS;
 
 /**
- * 描述：// TODO
- *
  * @author w.dehi.2021-10-14
  */
 @Slf4j
@@ -48,18 +44,18 @@ public class TxManagerConfig implements ApplicationContextAware {
 
     @Bean
     public Advisor advisor() {
-        Map<String, Object> annotatedBeans = applicationContext.getBeansWithAnnotation(SpringBootApplication.class);
-        if (annotatedBeans.isEmpty()) {
-            throw new IllegalArgumentException("启动类上需要加上@SpringBootApplication注解");
+        Map<String, Object> txManagerAnno = applicationContext.getBeansWithAnnotation(EnableTxManager.class);
+        if (txManagerAnno.size() != 1) {
+            throw new IllegalArgumentException("应用中需要且仅需1个@EnableTxManager注解!");
         }
-        Class<?> ic = annotatedBeans.values().toArray()[0].getClass();
-        EnableTxManager anno = AnnotationUtils.findAnnotation(ic, EnableTxManager.class);
+        Class<?> c = txManagerAnno.values().toArray()[0].getClass();
+        EnableTxManager anno = AnnotationUtils.findAnnotation(c, EnableTxManager.class);
 
-        String[] packages = AnnotationUtil.getAnnotationValue(ic, EnableTxManager.class, "packages");
-        Class<?> rollbackFor = AnnotationUtil.getAnnotationValue(ic, EnableTxManager.class, "rollbackFor");
-        boolean enableReadOnly = AnnotationUtil.getAnnotationValue(ic, EnableTxManager.class, "enableReadOnly");
-        String[] readOnly = AnnotationUtil.getAnnotationValue(ic, EnableTxManager.class, "readOnly");
-        String[] required = AnnotationUtil.getAnnotationValue(ic, EnableTxManager.class, "required");
+        String[] packages = anno.packages();
+        Class<?> rollbackFor = anno.rollbackFor();
+        boolean enableReadOnly = anno.enableReadOnly();
+        String[] readOnly = anno.readOnly();
+        String[] required = anno.required();
 
         return txAdviceAdvisor(enableReadOnly, rollbackFor, packages, readOnly, required);
     }

@@ -11,30 +11,46 @@
 <dependency>
     <groupId>com.github.dreamroute</groupId>
     <artifactId>tx-manager-spring-boot-starter</artifactId>
-    <version>1.1-RELEASE</version>
+    <version>最新版本</version>
 </dependency>
 ```
 
-#### 排除依赖
-对于不需要事务的微服务，可以使用`@SpringBootApplication(exclude = {TxManagerAutoConfiguration.class})`方式进行排除
-
-
 #### 配置说明
+在启动类上加上注解`@EnableTxManager`即可开启全局事务管理，例如：
+```java
+@EnableTxManager(
+        packages = {"com.github.dreamroute.tx.manager.sample.service.impl"},
+        rollbackFor = 默认是RuntimeException.class,
+        enableReadOnly = true,
+        readOnly = {},
+        required = {}
+)
+public class App {
+    public static void main(String[] args) {
+        SpringApplication.run(App.class, args);
+    }
+}
+```
+`@EnableTxManager`包括的属性如下：
 ```properties
-# 【必填】配置需要被事务拦截的包，多个包用逗号分割
-tx.manager.packages=com.github.dreamroute.tx.manager.sample.service.impl
-# 【非必填】默认是：java.lang.RuntimeException
-tx.manager.rollback-for = java.lang.Exception 
-# 【非必填】默认是：false，对于配置了readOnly的方法，如果是false，那么readOnly方法将不会被施加事务，否则施加readOnly事务
-tx.manager.enable-read-only=true/false
-# 【非必填】支持通配符，默认是：list*, get*, find*, page*, count*, query*, select*
-tx.manager.read-only = xxx
-# 【非必填】支持通配符，默认是：除开read-only之外的方法
-tx.manager.required = xxx
+# 【必填】配置需要被事务拦截的包，数组
+packages = {"xxx", "yyy"}
+# 【非必填】指定应用中回滚异常，默认是RuntimeException
+rollbackFor = xxx
+# 【非必填】对于查询操作，是否开启只读事务，默认开启
+enableReadOnly = true/false
+# 【非必填】只读方法，支持通配符，比如get*, select*，默认值是："list*, get*, find*, page*, count*, query*, select*"，
+# 如果配置了readOnly，那么就是默认值与用户配置的值的并集
+readOnly = {"xxx", "yyy"}
+# 【非必填】普通事务，支持通配符，例如insert*, delete*，默认是除开readOnly之外的所有方法
+required = {"xxx", "yyy"}
 ```
 ```properties
-# 如果同一个表达式，既配置了`tx.manager.read-only`同时又配置了`tx.manager.required`，那么`required`优先级更高，
-# 比如下方配置，那么生效的其实是tx.manager.required
+# 如果同一个表达式，既配置了`readOnly`同时又配置了`required`，那么`required`优先级更高，
+# 比如下方配置，那么生效的其实是required，但是实际上一般没人这么做
 tx.manager.read-only = getUser
 tx.manager.required = getUser
 ```
+
+#### 最佳实践
+只需要配置`packages`即可，其他均使用默认值，在项目中查询方法均使用list*, get*, find*, page*, count*, query*, select*之一

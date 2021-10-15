@@ -21,12 +21,12 @@ class UserServiceTest {
     private UserMapper userMapper;
 
     @Test
-    void insertTest() {
+    void insertThrowRuntimeExceptionTest() {
         assertThrows(IllegalArgumentException.class, userService::insert);
     }
 
     @Test
-    void insertThrowExceptionTest() {
+    void insertThrowCheckedExceptionTest() {
         assertThrows(IOException.class, userService::insertThrowException);
     }
 

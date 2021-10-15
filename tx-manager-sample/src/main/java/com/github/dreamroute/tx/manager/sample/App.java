@@ -12,7 +12,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @EnableSQLPrinter
 @SpringBootApplication
 @MapperScan(basePackages = "com.github.dreamroute.tx.manager.sample.mapper")
-@EnableTxManager(packages = "com.github.dreamroute.tx.manager.sample.service.impl")
+@EnableTxManager(
+        packages = {"com.github.dreamroute.tx.manager.sample.service.impl"},
+        rollbackFor = Exception.class,
+        enableReadOnly = true,
+        readOnly = {},
+        required = {}
+)
 public class App {
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
