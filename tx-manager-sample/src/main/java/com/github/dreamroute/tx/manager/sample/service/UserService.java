@@ -10,4 +10,6 @@ public interface UserService {
     void getReadOnly();
 
     User selectById(Long id);
+
+    void withTransactional();
 }

@@ -5,6 +5,7 @@ import com.github.dreamroute.tx.manager.sample.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.TransientDataAccessResourceException;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -20,11 +21,17 @@ class UserServiceTest {
     @Resource
     private UserMapper userMapper;
 
+    /**
+     * 运行时异常
+     */
     @Test
     void insertThrowRuntimeExceptionTest() {
         assertThrows(IllegalArgumentException.class, userService::insert);
     }
 
+    /**
+     * 受检异常
+     */
     @Test
     void insertThrowCheckedExceptionTest() {
         assertThrows(IOException.class, userService::insertThrowException);
@@ -36,6 +43,14 @@ class UserServiceTest {
     @Test
     void insertInReadOnlyTest() {
         assertThrows(TransientDataAccessResourceException.class, userService::getReadOnly);
+    }
+
+    /**
+     * 与@Transactional同时存在
+     */
+    @Test
+    void withTransactionalTest() {
+        userService.withTransactional();
     }
 
     @Test

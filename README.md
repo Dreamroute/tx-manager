@@ -52,5 +52,10 @@ tx.manager.read-only = getUser
 tx.manager.required = getUser
 ```
 
+#### 说明
+此配置属于全局配置事务，部分特殊业务逻辑，需要比较特殊的定制化配置，可以使用`@Transactional`注解进行配置，
+比如需要自定义事务传播机制，`@Transactional`的优先级高于全局事务配置，在`TxManagerConfig`类上标记有
+`@EnableTransactionManagement`注解，才能实现上述的效果，否则应用并没有开启事务管理器
+
 #### 最佳实践
 只需要配置`packages`即可，其他均使用默认值，在项目中查询方法均使用list*, get*, find*, page*, count*, query*, select*之一

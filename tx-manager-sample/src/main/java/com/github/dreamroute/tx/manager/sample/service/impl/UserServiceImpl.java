@@ -7,6 +7,7 @@ import com.github.dreamroute.tx.manager.sample.service.AddrService;
 import com.github.dreamroute.tx.manager.sample.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 
@@ -41,6 +42,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void getReadOnly() {
+        User user = new User();
+        user.setName("yzw");
+        user.setPassword("123");
+        userMapper.insert(user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void withTransactional() {
         User user = new User();
         user.setName("yzw");
         user.setPassword("123");

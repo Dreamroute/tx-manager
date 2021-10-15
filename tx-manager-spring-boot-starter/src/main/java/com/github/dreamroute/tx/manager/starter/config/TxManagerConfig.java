@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource;
 import org.springframework.transaction.interceptor.RollbackRuleAttribute;
 import org.springframework.transaction.interceptor.RuleBasedTransactionAttribute;
@@ -30,6 +31,7 @@ import static com.github.dreamroute.tx.manager.starter.config.EnableTxManager.DE
  * @author w.dehi.2021-10-14
  */
 @Slf4j
+@EnableTransactionManagement
 public class TxManagerConfig implements ApplicationContextAware {
 
     @Resource
