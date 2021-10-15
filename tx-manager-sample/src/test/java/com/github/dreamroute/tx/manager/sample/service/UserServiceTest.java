@@ -5,7 +5,6 @@ import com.github.dreamroute.tx.manager.sample.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.TransientDataAccessResourceException;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -50,7 +49,7 @@ class UserServiceTest {
      */
     @Test
     void withTransactionalTest() {
-        userService.withTransactional();
+        assertThrows(TransientDataAccessResourceException.class, userService::withTransactional);
     }
 
     @Test
