@@ -6,4 +6,6 @@ public interface AddrService {
 
     void insert(Addr addr);
 
+    void insertThrowException(Addr addr);
+
 }

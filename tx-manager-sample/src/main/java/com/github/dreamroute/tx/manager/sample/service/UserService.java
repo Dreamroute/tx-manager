@@ -12,4 +12,7 @@ public interface UserService {
     User selectById(Long id);
 
     void withTransactional();
+
+    void insertCatchInnerException();
+
 }

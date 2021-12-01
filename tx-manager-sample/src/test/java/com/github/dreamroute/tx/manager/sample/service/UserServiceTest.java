@@ -64,4 +64,20 @@ class UserServiceTest {
         assertEquals("w.dehai", user.getName());
     }
 
+    /**
+     * 内外均开启事务，内部抛出异常，并且被catch，外部依然回滚，
+     * 如果希望外层事务不回滚，那么内层事务使用NESTED
+     * 全局配置和单个配置优先级测试：要让@Transactional优先于全局配置，需要开启@EnableTransactionManagement
+     */
+    @Test
+    void catchInnerExceptionTest() {
+        userService.insertCatchInnerException();
+    }
+
+    /**
+     * 参考：
+     * 1. https://yunlongn.github.io/2019/05/06/%E8%AE%B0%E4%B8%80%E6%AC%A1%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%9D%91Transaction-rolled-back-because-it-has-been-marked-as-rollback-only/
+     * 2. https://segmentfault.com/a/1190000013341344
+     */
+
 }
